@@ -23,6 +23,7 @@ light_blue = "#598392"
 white = "#aec3b0"
 consolas = tkinter.font.Font(family="Consolas", size=15)
 small_consolas = tkinter.font.Font(family="Consolas", size=11)
+add_s = ""
 
 ########## BACKEND VARIABLES ##########
 song_dictionary = {}
@@ -48,6 +49,10 @@ title.pack()
 # Label for checking if paused
 paused = tk.Label(win, text = "Song player for projects", fg = blue, bg = dark_blue, font = consolas)
 paused.pack()
+
+# Label for song amount
+song_length = tk.Label(win, text = f"{len(song_dictionary)} song{add_s} loaded", fg = blue, bg = dark_blue, font = consolas)
+song_length.pack()
 
 # Frame to store all song file buttons
 song_button_frame = tk.Frame(win, bg=dark_blue)
@@ -295,6 +300,11 @@ def check_pygame_events():
 
             play_songs("not need smh")
     
+    add_s = ""
+    if len(song_dictionary) != 1: 
+        add_s = "s"
+    song_length.configure(text = f"{len(song_dictionary)} song{add_s} loaded")
+
     win.after(100, check_pygame_events)
 
 check_pygame_events()
