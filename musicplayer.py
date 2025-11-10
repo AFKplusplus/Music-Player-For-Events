@@ -7,7 +7,7 @@ from tkinter import ttk # Scrollbar
 from tkinter.filedialog import askopenfilename # Add songs popup
 
 # Other imports
-from os import listdir # Get songs
+import os # File management
 import random # Shuffle songs
 import pygame # Play songs
 import shutil # Add songs
@@ -97,7 +97,7 @@ def load_songs(event):
     current_song_idx = 0
 
     # Get every song in the songs folder
-    song_name_list = listdir(song_folder_path)
+    song_name_list = os.listdir(song_folder_path)
 
     for name in song_name_list:
         song_name = name[:len(name)-4] # Remove the .mp3 at the end of the filename
@@ -147,6 +147,25 @@ def clear_songs(event):
     # Turn off event so that the song stops
     pygame.mixer.music.set_endevent()
     pygame.mixer.music.stop()
+
+def add_songs(event):
+    global song_dictionary
+
+    song_file = askopenfilename(
+        filetypes=[("MP3 Files", "*.mp3"), ("All Files", "*.*")]
+    )
+    if not song_file:
+        return
+    
+    # Copy the song file to the songs folder
+    shutil.copy(song_file, song_folder_path)
+
+    # Add the song to the list
+    song_name = os.path.basename(song_file)
+    song_name = song_name[:len(song_name) - 4] # Remove the .mp3
+
+    song_dictionary[song_name] = tk.Label(song_frame, text=song_name, fg = light_blue, bg = dark_blue, font = small_consolas)
+    song_dictionary[song_name].pack(side=tk.TOP)
 
 def play_songs(event):
     global current_song_name, current_song_idx, song_dictionary
@@ -216,7 +235,6 @@ def previous_songs(event):
     pygame.mixer.music.stop()
 
 def pause_songs(event):
-
     # Return if the song dictionary is empty
     if song_dictionary == {}: return
 
@@ -246,6 +264,10 @@ def restart_songs(event):
 load_song = tk.Button(song_button_frame, text="Load Songs", width=15, height=2, bg=dark_blue, fg=light_blue, activebackground=light_blue, activeforeground=white, font=consolas)
 load_song.pack(side=tk.LEFT, padx=10)
 load_song.bind("<Button-1>", load_songs)
+
+add_song = tk.Button(song_button_frame, text="Add Songs", width=15, height=2, bg=dark_blue, fg=light_blue, activebackground=light_blue, activeforeground=white, font=consolas)
+add_song.pack(side=tk.LEFT, padx=10)
+add_song.bind("<Button-1>", add_songs)
 
 shuffle_song = tk.Button(song_button_frame, text="Shuffle Songs", width=15, height=2, bg=dark_blue, fg=light_blue, activebackground=light_blue, activeforeground=white, font=consolas)
 shuffle_song.pack(side=tk.LEFT, padx=10)
